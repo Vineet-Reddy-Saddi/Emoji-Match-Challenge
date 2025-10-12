@@ -132,7 +132,7 @@ export function GameGrid() {
         </div>
       </div>
 
-      <div className="grid grid-cols-6 gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-2xl">
+      <div className="grid grid-cols-6 gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-xl">
         {allCards}
       </div>
 
