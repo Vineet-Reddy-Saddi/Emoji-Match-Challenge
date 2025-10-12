@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -10,10 +9,12 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { addScore } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import React, { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { useFirestore } from "@/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { addDocumentNonBlocking } from "@/firebase/non-blocking-updates";
 
 type GameOverDialogProps = {
   isOpen: boolean;
@@ -27,33 +28,35 @@ export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }:
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
+  const firestore = useFirestore();
 
   useEffect(() => {
-    if (isOpen && !submitted) {
+    if (isOpen && !submitted && firestore) {
       const submit = async () => {
         setIsSubmitting(true);
-        const result = await addScore(playerName, moves, time);
-        setIsSubmitting(false);
-
-        if (result.success) {
-          setSubmitted(true);
-          toast({
-            title: "Score Submitted!",
-            description: "Your score has been successfully recorded.",
-          });
-        } else {
-          toast({
+        try {
+            const scoresCollection = collection(firestore, "scores");
+            addDocumentNonBlocking(scoresCollection, {
+                playerName,
+                moves,
+                totalTime: time,
+                submissionDate: serverTimestamp(),
+            });
+            setIsSubmitting(false);
+            setSubmitted(true);
+        } catch (error) {
+           setIsSubmitting(false);
+           toast({
             title: "Submission Failed",
-            description: result.error,
+            description: "Could not submit your score. Please try again.",
             variant: "destructive",
           });
         }
       };
       submit();
     }
-  }, [isOpen, submitted, playerName, moves, time, toast]);
+  }, [isOpen, submitted, playerName, moves, time, toast, firestore]);
 
-  // Reset submitted state when dialog is closed or play again is clicked
   useEffect(() => {
     if (!isOpen) {
       setSubmitted(false);

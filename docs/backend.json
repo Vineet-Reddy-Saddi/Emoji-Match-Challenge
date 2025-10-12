@@ -1,8 +1,8 @@
 
 {
   "entities": {
-    "PlayerScore": {
-      "title": "PlayerScore",
+    "Score": {
+      "title": "Score",
       "type": "object",
       "description": "Represents a player's score in the Emoji Match Challenge game.",
       "properties": {
@@ -52,11 +52,11 @@
   "firestore": {
       "structure": [
         {
-          "path": "/player_scores/{playerScoreId}",
+          "path": "/scores/{scoreId}",
           "schema": {
-            "$ref": "#/entities/PlayerScore"
+            "$ref": "#/entities/Score"
           },
-          "description": "Stores individual player scores. Allow public create and read access."
+          "description": "Stores individual player scores. Allow public create and read access for all users."
         },
         {
           "path": "/admins/{adminId}",

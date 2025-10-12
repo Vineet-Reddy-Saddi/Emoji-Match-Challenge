@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -30,7 +29,7 @@ export function Leaderboard() {
     () =>
       firestore
         ? query(
-            collection(firestore, "player_scores"),
+            collection(firestore, "scores"),
             orderBy("moves", "asc"),
             orderBy("totalTime", "asc")
           )
@@ -67,7 +66,7 @@ export function Leaderboard() {
                   <TableCell>{score.moves}</TableCell>
                   <TableCell>{score.totalTime}</TableCell>
                   <TableCell className="text-right">
-                    {format(score.submissionDate.toDate(), "PPP")}
+                    {score.submissionDate ? format(score.submissionDate.toDate(), "PPP") : 'N/A'}
                   </TableCell>
                 </TableRow>
               ))
