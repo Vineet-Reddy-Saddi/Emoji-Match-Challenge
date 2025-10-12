@@ -2,16 +2,19 @@ import { AdminPageClient } from "@/components/admin/admin-page-client";
 import { Leaderboard } from "@/components/admin/leaderboard";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 export default function AdminPage() {
   return (
-    <main>
-      <AdminPageClient>
-        <Suspense fallback={<LeaderboardSkeleton />}>
-          <Leaderboard />
-        </Suspense>
-      </AdminPageClient>
-    </main>
+    <FirebaseClientProvider>
+      <main>
+        <AdminPageClient>
+          <Suspense fallback={<LeaderboardSkeleton />}>
+            <Leaderboard />
+          </Suspense>
+        </AdminPageClient>
+      </main>
+    </FirebaseClientProvider>
   );
 }
 

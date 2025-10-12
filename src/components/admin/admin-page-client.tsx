@@ -19,6 +19,7 @@ export function AdminPageClient({ children }: AdminPageClientProps) {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    // This is a simple client-side check. For real applications, use a proper authentication system.
     if (password === "Lucky@2008") {
       setIsAuthenticated(true);
     } else {

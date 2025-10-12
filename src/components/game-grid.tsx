@@ -22,7 +22,11 @@ type CardState = {
   isMatched: boolean;
 };
 
-export function GameGrid() {
+type GameGridProps = {
+  playerName: string;
+};
+
+export function GameGrid({ playerName }: GameGridProps) {
   const [cards, setCards] = useState<CardState[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -32,7 +36,8 @@ export function GameGrid() {
   const [isChecking, setIsChecking] = useState(false);
 
   const initializeGame = useCallback(() => {
-    const shuffledEmojis = shuffleArray([...EMOJIS, ...EMOJIS]);
+    const gameEmojis = EMOJIS.slice(0, 12);
+    const shuffledEmojis = shuffleArray([...gameEmojis, ...gameEmojis]);
     setCards(
       shuffledEmojis.map((emoji) => ({ emoji, isFlipped: false, isMatched: false }))
     );
@@ -116,9 +121,11 @@ export function GameGrid() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <div className="flex flex-col items-center mb-6 text-center">
+       <div className="w-full max-w-xl text-center mb-6">
         <h1 className="font-headline text-4xl md:text-5xl font-bold mb-2">Emoji Match Challenge</h1>
-        <p className="text-muted-foreground">Click a card to start the timer.</p>
+        <p className="text-muted-foreground">
+          Hello, <span className="font-bold text-accent">{playerName}</span>! Click a card to start the timer.
+        </p>
       </div>
 
       <div className="flex items-center justify-center gap-8 mb-6 text-lg p-3 bg-card rounded-lg shadow-sm">
@@ -132,7 +139,7 @@ export function GameGrid() {
         </div>
       </div>
 
-      <div className="grid grid-cols-6 gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-xl">
+      <div className="grid grid-cols-6 grid-rows-4 gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-xl">
         {allCards}
       </div>
 
@@ -140,6 +147,7 @@ export function GameGrid() {
         isOpen={gameOver}
         moves={moves}
         time={time}
+        playerName={playerName}
         onPlayAgain={initializeGame}
       />
     </div>
