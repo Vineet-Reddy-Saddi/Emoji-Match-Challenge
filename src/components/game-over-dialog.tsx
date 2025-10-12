@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -52,8 +53,14 @@ export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }:
     }
   }, [isOpen, submitted, playerName, moves, time, toast]);
 
+  // Reset submitted state when dialog is closed or play again is clicked
+  useEffect(() => {
+    if (!isOpen) {
+      setSubmitted(false);
+    }
+  }, [isOpen]);
+
   const handlePlayAgain = () => {
-    setSubmitted(false);
     onPlayAgain();
   };
   
@@ -80,7 +87,7 @@ export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }:
           </div>
         )}
 
-        {submitted && (
+        {!isSubmitting && submitted && (
           <div className="text-center py-4">
              <p className="text-accent font-semibold">Your score has been recorded!</p>
           </div>

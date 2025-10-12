@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "PlayerScore": {
@@ -49,21 +50,21 @@
     ]
   },
   "firestore": {
-     "structure": [
-      {
-        "path": "/player_scores/{playerScoreId}",
-        "schema": {
-          "$ref": "#/entities/PlayerScore"
+      "structure": [
+        {
+          "path": "/player_scores/{playerScoreId}",
+          "schema": {
+            "$ref": "#/entities/PlayerScore"
+          },
+          "description": "Stores individual player scores. Anyone can create, only admins can read."
         },
-        "description": "Stores individual player scores. Anyone can create, only admins can read."
-      },
-      {
-        "path": "/admins/{adminId}",
-        "schema": {
-          "$ref": "#/entities/Admin"
-        },
-        "description": "Stores admin user IDs. Used for access control in security rules."
-      }
+        {
+          "path": "/admins/{adminId}",
+          "schema": {
+            "$ref": "#/entities/Admin"
+          },
+          "description": "Stores admin user IDs. Used for access control in security rules."
+        }
     ]
   }
 }

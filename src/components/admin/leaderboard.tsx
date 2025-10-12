@@ -1,3 +1,6 @@
+
+"use client";
+
 import {
   Table,
   TableBody,
@@ -6,11 +9,40 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getScores, type Score } from "@/lib/actions";
+import { useCollection } from "@/firebase/firestore/use-collection";
+import { useFirestore, useMemoFirebase } from "@/firebase/provider";
+import { collection, query, orderBy, Timestamp } from "firebase/firestore";
 import { format } from "date-fns";
+import { Skeleton } from "../ui/skeleton";
 
-export async function Leaderboard() {
-  const scores: Score[] = await getScores();
+type Score = {
+  id: string;
+  playerName: string;
+  moves: number;
+  totalTime: number;
+  submissionDate: Timestamp;
+};
+
+export function Leaderboard() {
+  const firestore = useFirestore();
+
+  const scoresQuery = useMemoFirebase(
+    () =>
+      firestore
+        ? query(
+            collection(firestore, "player_scores"),
+            orderBy("moves", "asc"),
+            orderBy("totalTime", "asc")
+          )
+        : null,
+    [firestore]
+  );
+
+  const { data: scores, isLoading } = useCollection<Score>(scoresQuery);
+
+  if (isLoading) {
+    return <LeaderboardSkeleton />;
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-16 md:mt-8">
@@ -27,15 +59,15 @@ export async function Leaderboard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {scores.length > 0 ? (
+            {scores && scores.length > 0 ? (
               scores.map((score, index) => (
                 <TableRow key={score.id}>
                   <TableCell className="font-medium">{index + 1}</TableCell>
-                  <TableCell>{score.name}</TableCell>
+                  <TableCell>{score.playerName}</TableCell>
                   <TableCell>{score.moves}</TableCell>
-                  <TableCell>{score.time}</TableCell>
+                  <TableCell>{score.totalTime}</TableCell>
                   <TableCell className="text-right">
-                    {format(new Date(score.submittedAt), "PPP")}
+                    {format(score.submissionDate.toDate(), "PPP")}
                   </TableCell>
                 </TableRow>
               ))
@@ -48,6 +80,21 @@ export async function Leaderboard() {
             )}
           </TableBody>
         </Table>
+      </div>
+    </div>
+  );
+}
+
+function LeaderboardSkeleton() {
+  return (
+    <div className="w-full max-w-4xl mx-auto mt-8">
+      <h2 className="font-headline text-3xl mb-4 text-center">Leaderboard</h2>
+      <div className="border rounded-lg p-4 space-y-2">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
       </div>
     </div>
   );

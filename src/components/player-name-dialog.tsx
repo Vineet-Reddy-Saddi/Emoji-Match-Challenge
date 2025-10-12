@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,8 +12,11 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/custom-dialog"; // Use custom-dialog
+} from "@/components/ui/custom-dialog";
 import React from 'react';
+import { useAuth } from "@/firebase";
+import { initiateAnonymousSignIn } from "@/firebase/non-blocking-login";
+
 
 type PlayerNameDialogProps = {
   onNameSubmit: (name: string) => void;
@@ -21,6 +25,13 @@ type PlayerNameDialogProps = {
 export function PlayerNameDialog({ onNameSubmit }: PlayerNameDialogProps) {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const auth = useAuth();
+
+  useEffect(() => {
+    if (auth) {
+      initiateAnonymousSignIn(auth);
+    }
+  }, [auth]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
