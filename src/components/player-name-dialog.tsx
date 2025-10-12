@@ -35,7 +35,7 @@ export function PlayerNameDialog({ onNameSubmit }: PlayerNameDialogProps) {
     <Dialog open={true}>
       <DialogContent className="sm:max-w-[425px]" hideCloseButton>
         <DialogHeader>
-          <DialogTitle className="font-headline text-2xl">Welcome!</DialogTitle>
+          <DialogTitle className="font-headline text-2xl">Welcome to Tanisi's Memory Test!</DialogTitle>
           <DialogDescription>
             The goal is to match all the pairs of cards. Click a card to flip it over, then click another to see if they match.
             <br/><br/>
