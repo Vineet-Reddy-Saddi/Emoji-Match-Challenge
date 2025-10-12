@@ -14,7 +14,6 @@ import React, { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useFirestore } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { addDocumentNonBlocking } from "@/firebase/non-blocking-updates";
 
 type GameOverDialogProps = {
   isOpen: boolean;
@@ -36,21 +35,22 @@ export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }:
         setIsSubmitting(true);
         try {
             const scoresCollection = collection(firestore, "scores");
-            addDocumentNonBlocking(scoresCollection, {
+            await addDoc(scoresCollection, {
                 playerName,
                 moves,
                 totalTime: time,
                 submissionDate: serverTimestamp(),
             });
-            setIsSubmitting(false);
             setSubmitted(true);
-        } catch (error) {
-           setIsSubmitting(false);
+        } catch (error: any) {
+           console.error("Error submitting score:", error);
            toast({
             title: "Submission Failed",
-            description: "Could not submit your score. Please try again.",
+            description: "Could not submit your score. Please check your connection and try again.",
             variant: "destructive",
           });
+        } finally {
+            setIsSubmitting(false);
         }
       };
       submit();
@@ -58,6 +58,7 @@ export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }:
   }, [isOpen, submitted, playerName, moves, time, toast, firestore]);
 
   useEffect(() => {
+    // Reset submission status when the dialog is closed
     if (!isOpen) {
       setSubmitted(false);
     }
@@ -92,12 +93,12 @@ export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }:
 
         {!isSubmitting && submitted && (
           <div className="text-center py-4">
-             <p className="text-accent font-semibold">Your score has been recorded!</p>
+             <p className="text-green-600 font-semibold">Your score has been recorded!</p>
           </div>
         )}
         
         <DialogFooter>
-          <Button onClick={handlePlayAgain} variant="outline">
+          <Button onClick={handlePlayAgain} variant="outline" className="w-full">
             Play Again
           </Button>
         </DialogFooter>

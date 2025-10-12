@@ -30,18 +30,6 @@
         "moves",
         "submissionDate"
       ]
-    },
-    "Admin": {
-      "title": "Admin",
-      "type": "object",
-      "description": "Represents an admin user.",
-      "properties": {
-        "uid": {
-          "type": "string",
-          "description": "The unique identifier of the admin user."
-        }
-      },
-      "required": ["uid"]
     }
   },
   "auth": {
@@ -50,21 +38,11 @@
     ]
   },
   "firestore": {
-      "structure": [
-        {
-          "path": "/scores/{scoreId}",
-          "schema": {
+    "/scores/{scoreId}": {
+        "schema": {
             "$ref": "#/entities/Score"
-          },
-          "description": "Stores individual player scores. Allow public create and read access for all users."
         },
-        {
-          "path": "/admins/{adminId}",
-          "schema": {
-            "$ref": "#/entities/Admin"
-          },
-          "description": "Stores admin user IDs. Used for access control in security rules."
-        }
-    ]
+        "description": "Publicly accessible game scores. Any user can create a new score, and any user can read the list of scores for the leaderboard."
+    }
   }
 }

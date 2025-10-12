@@ -13,6 +13,8 @@ import { useFirestore, useMemoFirebase } from "@/firebase/provider";
 import { collection, query, orderBy, Timestamp } from "firebase/firestore";
 import { format } from "date-fns";
 import { Skeleton } from "../ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle } from "lucide-react"
 
 type Score = {
   id: string;
@@ -37,10 +39,24 @@ export function Leaderboard() {
     [firestore]
   );
 
-  const { data: scores, isLoading } = useCollection<Score>(scoresQuery);
+  const { data: scores, isLoading, error } = useCollection<Score>(scoresQuery);
 
   if (isLoading) {
     return <LeaderboardSkeleton />;
+  }
+
+  if (error) {
+    return (
+        <div className="w-full max-w-4xl mx-auto mt-16 md:mt-8">
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                {error.message}
+              </AlertDescription>
+            </Alert>
+        </div>
+    )
   }
 
   return (
