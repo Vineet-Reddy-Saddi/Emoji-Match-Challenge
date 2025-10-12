@@ -56,7 +56,7 @@
           "schema": {
             "$ref": "#/entities/PlayerScore"
           },
-          "description": "Stores individual player scores. Anyone can create, only admins can read."
+          "description": "Stores individual player scores. Anyone can create and read."
         },
         {
           "path": "/admins/{adminId}",
