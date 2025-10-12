@@ -1,14 +1,21 @@
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { initializeApp, getApps, cert, App } from 'firebase-admin/app';
 
-const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
-  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-  : undefined;
+let app: App;
 
-let app;
 if (!getApps().length) {
-  app = initializeApp({
-    credential: serviceAccount ? cert(serviceAccount) : undefined,
-  });
+  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+    : undefined;
+
+  if (serviceAccount) {
+    app = initializeApp({
+      credential: cert(serviceAccount),
+    });
+  } else {
+    // In a hosted environment (like Firebase App Hosting),
+    // initializeApp() discovers credentials automatically.
+    app = initializeApp();
+  }
 } else {
   app = getApps()[0];
 }
