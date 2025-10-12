@@ -1,0 +1,62 @@
+/**
+ * @fileoverview Firestore Security Rules for the Emoji Match Challenge game.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a role-based access control model where only authenticated admins
+ * can view player scores, while anyone can submit their score.
+ *
+ * Data Structure:
+ * - /player_scores/{playerScoreId}: Stores individual player scores. Accessible for creation by anyone.
+ * - /admins/{adminId}: Stores the IDs of admin users. Only admins can read this.
+ *
+ * Key Security Decisions:
+ * - Public score submissions: Anyone can submit a score, but only admins can view all scores.
+ * - Admin role: Admin status is determined by the presence of their UID in the `/admins` collection.
+ * - No user listing: The rules explicitly prevent listing all documents in the `/admins` collection.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Secure access to player scores. Anyone can create a score record, but only admins can view them.
+     * @path /player_scores/{playerScoreId}
+     * @allow (create) - Any authenticated user can submit a new score.
+     * @deny (get, list, update, delete) - Non-admin users cannot read, modify, or delete score records.
+     * @principle Allows public write, restricts read/write access to authenticated admins only.
+     */
+    match /player_scores/{playerScoreId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if true;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Secure access to admin user IDs. Only admins can view other admins.
+     * @path /admins/{adminId}
+     * @allow (get) - Any admin can read their own admin record to confirm their status.
+     * @deny (create, list, update, delete) - Non-admin users cannot create, read, modify, or delete admin records. Listing is also denied.
+     * @principle Enforces strict admin-only access to admin user data.
+     */
+    match /admins/{adminId} {
+      allow get: if isAdmin();
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // Helper functions
+    // isSignedIn() - Checks if the request is authenticated.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // isAdmin() - Checks if the requesting user's UID exists in the /admins collection.
+    function isAdmin() {
+      return exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "PlayerScore": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PlayerScore",
+      "type": "object",
+      "description": "Represents a player's score in the Emoji Match Challenge game.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the player's score record."
+        },
+        "playerName": {
+          "type": "string",
+          "description": "The name of the player."
+        },
+        "totalTime": {
+          "type": "number",
+          "description": "The total time taken by the player to complete the game, in seconds."
+        },
+        "moves": {
+          "type": "number",
+          "description": "The number of moves taken by the player to complete the game."
+        },
+        "submissionDate": {
+          "type": "string",
+          "description": "The date and time when the score was submitted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "playerName",
+        "totalTime",
+        "moves",
+        "submissionDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/player_scores/{playerScoreId}",
+        "definition": {
+          "entityName": "PlayerScore",
+          "schema": {
+            "$ref": "#/backend/entities/PlayerScore"
+          },
+          "description": "Stores individual player scores for the Emoji Match Challenge game. Each document represents a single score record and includes player name, total time, number of moves, and submission date.",
+          "params": [
+            {
+              "name": "playerScoreId",
+              "description": "Unique identifier for the player's score record."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/admins/{adminId}",
+        "definition": {
+          "entityName": "admin",
+          "schema": {
+            "$ref": "#/backend/entities/admin"
+          },
+          "description": "Stores the IDs of admin users who are authorized to view the leaderboard. Existence in this collection grants admin privileges.",
+          "params": [
+            {
+              "name": "adminId",
+              "description": "The unique identifier of an admin user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to store player scores for the Emoji Match Challenge game and provide an admin leaderboard. To ensure security and scalability, a flat collection approach is used for storing player scores. The `player_scores` collection stores all player scores, and a separate `admins` collection manages admin user IDs, enabling secure access to the admin leaderboard. This design promotes Authorization Independence by avoiding hierarchical dependencies. Rules are simplified because access control is determined directly from the existence of a UID in the `admins` collection. This design supports the required QAPs by segregating data with different access needs (public scores vs. admin leaderboard) into distinct collections. The structure also facilitates efficient querying and data management, ensuring that only authorized personnel can view sensitive leaderboard information."
+  }
+}
