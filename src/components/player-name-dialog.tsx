@@ -37,6 +37,10 @@ export function PlayerNameDialog({ onNameSubmit }: PlayerNameDialogProps) {
         <DialogHeader>
           <DialogTitle className="font-headline text-2xl">Welcome!</DialogTitle>
           <DialogDescription>
+            The goal is to match all the pairs of cards. Click a card to flip it over, then click another to see if they match.
+            <br/><br/>
+            This game is for experimental purposes, so nothing will count for or against you based on your score... enjoy!
+            <br/><br/>
             Please enter your name to start the game.
           </DialogDescription>
         </DialogHeader>

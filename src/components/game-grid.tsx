@@ -84,16 +84,18 @@ export function GameGrid({ playerName }: GameGridProps) {
       const [firstIndex, secondIndex] = newFlippedIndices;
       if (cards[firstIndex].emoji === cards[secondIndex].emoji) {
         // Match found
-        const matchedCards = newCards.map((card, i) =>
-          i === firstIndex || i === secondIndex ? { ...card, isMatched: true } : card
-        );
-        setCards(matchedCards);
-        setFlippedIndices([]);
-        setIsChecking(false);
-        if (matchedCards.every((c) => c.isMatched)) {
-          setGameOver(true);
-          setGameStarted(false);
-        }
+        setTimeout(() => {
+            const matchedCards = newCards.map((card, i) =>
+              i === firstIndex || i === secondIndex ? { ...card, isMatched: true } : card
+            );
+            setCards(matchedCards);
+            setFlippedIndices([]);
+            setIsChecking(false);
+            if (matchedCards.every((c) => c.isMatched)) {
+              setGameOver(true);
+              setGameStarted(false);
+            }
+        }, 500); // Wait for flip animation to finish
       } else {
         // Mismatch
         setTimeout(() => {
