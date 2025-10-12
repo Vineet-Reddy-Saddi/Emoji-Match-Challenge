@@ -1,7 +1,7 @@
 "use server";
 
-import { collection, addDoc, getDocs, orderBy, query, Timestamp } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore/lite";
+import { collection, addDoc, getDocs, orderBy, query, Timestamp } from "firebase/firestore/lite";
+import { getFirestore } from "firebase-admin/firestore";
 import { app } from "./firebase-admin"; // Using admin SDK for server-side operations
 import { revalidatePath } from "next/cache";
 
