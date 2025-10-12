@@ -5,6 +5,8 @@ import { Card } from '@/components/card';
 import { GameOverDialog } from '@/components/game-over-dialog';
 import { EMOJIS } from '@/lib/emojis';
 import { Timer, Repeat2 } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from './ui/button';
 
 // Fisher-Yates shuffle algorithm
 const shuffleArray = (array: string[]) => {
@@ -143,6 +145,14 @@ export function GameGrid({ playerName }: GameGridProps) {
 
       <div className="grid grid-cols-5 grid-rows-4 gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-xl">
         {allCards}
+      </div>
+
+      <div className="absolute bottom-4 right-4">
+        <Button asChild variant="link">
+            <Link href="/admin">
+                Admin Leaderboard
+            </Link>
+        </Button>
       </div>
 
       <GameOverDialog
