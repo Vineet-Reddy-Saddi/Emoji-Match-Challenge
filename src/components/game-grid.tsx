@@ -36,7 +36,7 @@ export function GameGrid({ playerName }: GameGridProps) {
   const [isChecking, setIsChecking] = useState(false);
 
   const initializeGame = useCallback(() => {
-    const gameEmojis = EMOJIS.slice(0, 12);
+    const gameEmojis = EMOJIS.slice(0, 10);
     const shuffledEmojis = shuffleArray([...gameEmojis, ...gameEmojis]);
     setCards(
       shuffledEmojis.map((emoji) => ({ emoji, isFlipped: false, isMatched: false }))
@@ -139,7 +139,7 @@ export function GameGrid({ playerName }: GameGridProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-6 grid-rows-4 gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-xl">
+      <div className="grid grid-cols-5 grid-rows-4 gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-xl">
         {allCards}
       </div>
 
