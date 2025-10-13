@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { GameGrid } from '@/components/game-grid';
 import { PlayerNameDialog } from '@/components/player-name-dialog';
-import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export default function Home() {
   const [playerName, setPlayerName] = useState<string | null>(null);
@@ -13,7 +12,6 @@ export default function Home() {
   };
 
   return (
-    <FirebaseClientProvider>
       <main>
         {playerName ? (
           <GameGrid playerName={playerName} />
@@ -21,6 +19,5 @@ export default function Home() {
           <PlayerNameDialog onNameSubmit={handleNameSubmit} />
         )}
       </main>
-    </FirebaseClientProvider>
   );
 }

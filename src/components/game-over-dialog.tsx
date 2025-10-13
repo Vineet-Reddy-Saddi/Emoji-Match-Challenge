@@ -11,10 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useFirestore } from "@/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { errorEmitter } from "@/firebase/error-emitter";
-import { FirestorePermissionError } from "@/firebase/errors";
+import { useScores } from "@/context/score-context";
 
 type GameOverDialogProps = {
   isOpen: boolean;
@@ -27,48 +24,35 @@ type GameOverDialogProps = {
 export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }: GameOverDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [submissionError, setSubmissionError] = useState<string | null>(null);
-  const firestore = useFirestore();
+  const { addScore } = useScores();
 
   useEffect(() => {
-    if (isOpen && !submitted && firestore) {
-      const submit = () => {
+    if (isOpen && !submitted) {
+      const submit = async () => {
         setIsSubmitting(true);
-        setSubmissionError(null);
         const scoreData = {
+            id: new Date().toISOString(),
             playerName,
             moves,
             totalTime: time,
-            submissionDate: serverTimestamp(),
+            submissionDate: new Date(),
         };
-        const scoresCollection = collection(firestore, "scores");
         
-        addDoc(scoresCollection, scoreData)
-          .then(() => {
-            setSubmitted(true);
-          })
-          .catch((serverError: any) => {
-            const permissionError = new FirestorePermissionError({
-              path: scoresCollection.path,
-              operation: 'create',
-              requestResourceData: scoreData,
-            });
-            errorEmitter.emit('permission-error', permissionError);
-            setSubmissionError("Could not submit your score. See console for details.");
-          })
-          .finally(() => {
-            setIsSubmitting(false);
-          });
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        addScore(scoreData);
+        setSubmitted(true);
+        setIsSubmitting(false);
       };
       submit();
     }
-  }, [isOpen, submitted, playerName, moves, time, firestore]);
+  }, [isOpen, submitted, playerName, moves, time, addScore]);
 
   useEffect(() => {
     // Reset submission status when the dialog is closed or reopened
     if (!isOpen) {
       setSubmitted(false);
-      setSubmissionError(null);
     }
   }, [isOpen]);
 
@@ -102,12 +86,6 @@ export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }:
         {!isSubmitting && submitted && (
           <div className="text-center py-4">
              <p className="text-green-600 font-semibold">Your score has been recorded!</p>
-          </div>
-        )}
-
-        {!isSubmitting && submissionError && (
-          <div className="text-center py-4">
-             <p className="text-destructive font-semibold">{submissionError}</p>
           </div>
         )}
         

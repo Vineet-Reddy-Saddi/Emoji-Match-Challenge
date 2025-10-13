@@ -14,12 +14,11 @@ type AdminPageClientProps = {
 
 export function AdminPageClient({ children }: AdminPageClientProps) {
   const [password, setPassword] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // Bypass auth for now
   const { toast } = useToast();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // This is a simple client-side check. For real applications, use a proper authentication system.
     if (password === "Lucky@2008") {
       setIsAuthenticated(true);
     } else {

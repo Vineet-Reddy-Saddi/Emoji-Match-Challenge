@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
-import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { ScoreProvider } from '@/context/score-context';
 
 export const metadata: Metadata = {
   title: 'Emoji Match Challenge',
@@ -21,7 +21,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=PT+Sans&family=Source+Code+Pro&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased h-full">
-          {children}
+          <ScoreProvider>
+            {children}
+          </ScoreProvider>
           <Toaster />
       </body>
     </html>
