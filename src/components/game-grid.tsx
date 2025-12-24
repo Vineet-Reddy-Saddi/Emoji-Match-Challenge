@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card } from '@/components/card';
@@ -26,9 +26,16 @@ type CardState = {
 
 type GameGridProps = {
   playerName: string;
+  mode: 'practice' | 'main';
+  onPracticeComplete?: () => void;
+  onStartMainGame?: () => void;
 };
 
-export function GameGrid({ playerName }: GameGridProps) {
+export function GameGrid({ playerName, mode, onPracticeComplete, onStartMainGame }: GameGridProps) {
+  const isPractice = mode === 'practice';
+  const gridSize = isPractice ? 2 : 5; // 2x2 for practice, 5x4 for main
+  const numPairs = isPractice ? 2 : 10;
+
   const [cards, setCards] = useState<CardState[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -38,7 +45,7 @@ export function GameGrid({ playerName }: GameGridProps) {
   const [isChecking, setIsChecking] = useState(false);
 
   const initializeGame = useCallback(() => {
-    const gameEmojis = EMOJIS.slice(0, 10);
+    const gameEmojis = EMOJIS.slice(0, numPairs);
     const shuffledEmojis = shuffleArray([...gameEmojis, ...gameEmojis]);
     setCards(
       shuffledEmojis.map((emoji) => ({ emoji, isFlipped: false, isMatched: false }))
@@ -49,7 +56,7 @@ export function GameGrid({ playerName }: GameGridProps) {
     setGameStarted(false);
     setGameOver(false);
     setIsChecking(false);
-  }, []);
+  }, [numPairs]);
 
   useEffect(() => {
     initializeGame();
@@ -70,7 +77,7 @@ export function GameGrid({ playerName }: GameGridProps) {
       return;
     }
 
-    if (!gameStarted) {
+    if (!gameStarted && mode === 'main') {
       setGameStarted(true);
     }
 
@@ -95,7 +102,11 @@ export function GameGrid({ playerName }: GameGridProps) {
             setIsChecking(false);
             if (matchedCards.every((c) => c.isMatched)) {
               setGameOver(true);
-              setGameStarted(false);
+              if (isPractice) {
+                onPracticeComplete?.();
+              } else {
+                setGameStarted(false);
+              }
             }
         }, 500); // Wait for flip animation to finish
       } else {
@@ -126,37 +137,55 @@ export function GameGrid({ playerName }: GameGridProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
        <div className="w-full max-w-xl text-center mb-6">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold mb-2">Emoji Match Challenge</h1>
+        <h1 className="font-headline text-4xl md:text-5xl font-bold mb-2">
+            {isPractice ? 'Practice Round' : 'Emoji Match Challenge'}
+        </h1>
         <p className="text-muted-foreground">
-          Hello, <span className="font-bold text-accent">{playerName}</span>! Click a card to start the timer.
+          {isPractice 
+            ? "Get comfortable with the game. This round isn't recorded." 
+            : <>Hello, <span className="font-bold text-accent">{playerName}</span>! Click a card to start the timer.</>
+          }
         </p>
       </div>
 
-      <div className="flex items-center justify-center gap-8 mb-6 text-lg p-3 bg-card rounded-lg shadow-sm">
-        <div className="flex items-center gap-2" title="Moves">
-          <Repeat2 className="w-5 h-5 text-accent" />
-          <span className="font-bold">{moves}</span>
+      {!isPractice && (
+        <div className="flex items-center justify-center gap-8 mb-6 text-lg p-3 bg-card rounded-lg shadow-sm">
+            <div className="flex items-center gap-2" title="Moves">
+            <Repeat2 className="w-5 h-5 text-accent" />
+            <span className="font-bold">{moves}</span>
+            </div>
+            <div className="flex items-center gap-2" title="Time">
+            <Timer className="w-5 h-5 text-accent" />
+            <span className="font-bold">{time}s</span>
+            </div>
         </div>
-        <div className="flex items-center gap-2" title="Time">
-          <Timer className="w-5 h-5 text-accent" />
-          <span className="font-bold">{time}s</span>
-        </div>
-      </div>
+      )}
 
-      <div className="grid grid-cols-5 grid-rows-4 gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-xl">
+      <div className={`grid gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-xl ${isPractice ? 'grid-cols-2 grid-rows-2 max-w-xs' : 'grid-cols-5 grid-rows-4'}`}>
         {allCards}
       </div>
 
-      <div className="absolute bottom-4 right-4">
-        <Button asChild variant="link">
-            <Link href="/admin">
-                Admin Leaderboard
-            </Link>
-        </Button>
-      </div>
+      {isPractice && gameOver && (
+        <div className="mt-6 text-center">
+            <p className="mb-4 font-semibold">Practice complete!</p>
+            <Button onClick={onStartMainGame} className="bg-accent text-accent-foreground hover:bg-accent/90">
+                Start Main Game
+            </Button>
+        </div>
+      )}
+
+      {!isPractice && (
+        <div className="absolute bottom-4 right-4">
+            <Button asChild variant="link">
+                <Link href="/admin">
+                    Admin Leaderboard
+                </Link>
+            </Button>
+        </div>
+      )}
 
       <GameOverDialog
-        isOpen={gameOver}
+        isOpen={!isPractice && gameOver}
         moves={moves}
         time={time}
         playerName={playerName}
