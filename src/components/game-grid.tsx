@@ -33,8 +33,8 @@ type GameGridProps = {
 
 export function GameGrid({ playerName, mode, onPracticeComplete, onStartMainGame }: GameGridProps) {
   const isPractice = mode === 'practice';
-  const gridSize = isPractice ? 2 : 5; // 2x2 for practice, 5x4 for main
-  const numPairs = isPractice ? 2 : 10;
+  const gridSize = isPractice ? 2 : 6;
+  const numPairs = isPractice ? 2 : 18;
 
   const [cards, setCards] = useState<CardState[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
@@ -136,7 +136,7 @@ export function GameGrid({ playerName, mode, onPracticeComplete, onStartMainGame
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-       <div className="w-full max-w-xl text-center mb-6">
+       <div className="w-full max-w-4xl text-center mb-6">
         <h1 className="font-headline text-4xl md:text-5xl font-bold mb-2">
             {isPractice ? 'Practice Round' : 'Emoji Match Challenge'}
         </h1>
@@ -161,7 +161,7 @@ export function GameGrid({ playerName, mode, onPracticeComplete, onStartMainGame
         </div>
       )}
 
-      <div className={`grid gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-xl ${isPractice ? 'grid-cols-2 grid-rows-2 max-w-xs' : 'grid-cols-5 grid-rows-4'}`}>
+      <div className={`grid gap-2 md:gap-3 p-4 rounded-lg bg-background/50 shadow-inner w-full max-w-4xl ${isPractice ? 'grid-cols-2 grid-rows-2 max-w-xs' : 'grid-cols-6 grid-rows-6'}`}>
         {allCards}
       </div>
 
@@ -189,7 +189,6 @@ export function GameGrid({ playerName, mode, onPracticeComplete, onStartMainGame
         moves={moves}
         time={time}
         playerName={playerName}
-        onPlayAgain={initializeGame}
       />
     </div>
   );

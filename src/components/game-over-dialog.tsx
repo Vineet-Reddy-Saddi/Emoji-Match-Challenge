@@ -6,9 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useScores } from "@/context/score-context";
@@ -18,10 +16,9 @@ type GameOverDialogProps = {
   moves: number;
   time: number;
   playerName: string;
-  onPlayAgain: () => void;
 };
 
-export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }: GameOverDialogProps) {
+export function GameOverDialog({ isOpen, moves, time, playerName }: GameOverDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const { addScore } = useScores();
@@ -56,18 +53,8 @@ export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }:
     }
   }, [isOpen]);
 
-  const handlePlayAgain = () => {
-    onPlayAgain();
-  };
-  
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      handlePlayAgain();
-    }
-  }
-
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="font-headline text-2xl">Congratulations, {playerName}!</DialogTitle>
@@ -88,12 +75,6 @@ export function GameOverDialog({ isOpen, moves, time, playerName, onPlayAgain }:
              <p className="text-green-600 font-semibold">Your score has been recorded!</p>
           </div>
         )}
-        
-        <DialogFooter>
-          <Button onClick={handlePlayAgain} variant="outline" className="w-full">
-            Play Again
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
