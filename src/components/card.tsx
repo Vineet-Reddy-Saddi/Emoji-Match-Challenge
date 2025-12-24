@@ -1,3 +1,4 @@
+
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -27,7 +28,10 @@ export function Card({ emoji, isFlipped, isMatched, onClick, isDisabled }: CardP
         )}
       >
         {/* Front of the card (emoji) */}
-        <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg shadow-md [transform:rotateY(180deg)] [backface-visibility:hidden]">
+        <div className={cn(
+            "absolute inset-0 w-full h-full flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg shadow-md [transform:rotateY(180deg)] [backface-visibility:hidden]",
+            { "bg-pink-200": isMatched }
+          )}>
           <span className="text-4xl sm:text-5xl drop-shadow-md">{emoji}</span>
         </div>
         {/* Back of the card */}

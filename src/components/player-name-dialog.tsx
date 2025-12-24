@@ -46,7 +46,7 @@ export function PlayerNameDialog({ onNameSubmit }: PlayerNameDialogProps) {
                 <div className="font-bold mt-4">How to Play:</div>
                 <ul className="list-disc list-inside">
                 <li>Click two cards at a time.</li>
-                <li>If the cards match, they will stay face up.</li>
+                <li>If the cards match, they will turn pink.</li>
                 <li>If they do not match, they will be turned face down again.</li>
                 </ul>
 
