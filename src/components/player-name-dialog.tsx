@@ -41,12 +41,12 @@ export function PlayerNameDialog({ onNameSubmit }: PlayerNameDialogProps) {
           <DialogDescription asChild>
             <div className="text-left">
                 <div className="font-bold mt-2">Objective:</div>
-                <p>Find all matching pairs of cards.</p>
+                <div>Find all matching pairs of cards.</div>
                 
                 <div className="font-bold mt-4">How to Play:</div>
                 <ul className="list-disc list-inside">
                 <li>Click two cards at a time.</li>
-                <li>If the cards match, they will turn pink.</li>
+                <li>If the cards match, they will turn light blue.</li>
                 <li>If they do not match, they will be turned face down again.</li>
                 </ul>
 
