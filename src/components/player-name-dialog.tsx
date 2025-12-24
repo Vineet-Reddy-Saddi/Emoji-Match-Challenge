@@ -38,24 +38,25 @@ export function PlayerNameDialog({ onNameSubmit }: PlayerNameDialogProps) {
       <DialogContent className="sm:max-w-[425px]" hideCloseButton>
         <DialogHeader>
           <DialogTitle className="font-headline text-2xl">Welcome to the Memory Experiment</DialogTitle>
-          <DialogDescription className="text-left">
-            <p className="font-bold mt-2">Objective:</p>
-            <p>Find all matching pairs of cards.</p>
-            
-            <p className="font-bold mt-4">How to Play:</p>
-            <ul className="list-disc list-inside">
-              <li>Click two cards at a time.</li>
-              <li>If the cards match, they will stay face up.</li>
-              <li>If they do not match, they will be turned face down again.</li>
-            </ul>
+          <DialogDescription asChild>
+            <div className="text-left">
+                <div className="font-bold mt-2">Objective:</div>
+                <p>Find all matching pairs of cards.</p>
+                
+                <div className="font-bold mt-4">How to Play:</div>
+                <ul className="list-disc list-inside">
+                <li>Click two cards at a time.</li>
+                <li>If the cards match, they will stay face up.</li>
+                <li>If they do not match, they will be turned face down again.</li>
+                </ul>
 
-            <p className="font-bold mt-4">Important Rules:</p>
-            <ul className="list-disc list-inside">
-                <li><span className="font-semibold">Focus on Turns:</span> We are measuring how many moves you take to finish, not how fast you click. Take your time to memorize the cards.</li>
-                <li><span className="font-semibold">No Notes:</span> Please do not use external aids or write anything down.</li>
-                <li><span className="font-semibold">Practice:</span> We will start with a brief practice round so you can get used to the game controls.</li>
-            </ul>
-
+                <div className="font-bold mt-4">Important Rules:</div>
+                <ul className="list-disc list-inside">
+                    <li><span className="font-semibold">Focus on Turns:</span> We are measuring how many moves you take to finish, not how fast you click. Take your time to memorize the cards.</li>
+                    <li><span className="font-semibold">No Notes:</span> Please do not use external aids or write anything down.</li>
+                    <li><span className="font-semibold">Practice:</span> We will start with a brief practice round so you can get used to the game controls.</li>
+                </ul>
+            </div>
           </DialogDescription>
         </DialogHeader>
         <form id="player-name-form" onSubmit={handleSubmit} className="grid gap-4 pt-4">
